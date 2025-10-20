@@ -64,12 +64,6 @@ public:
 	ATriggerBoxArena();
 
 	void SetArenaReference(AArenaManager* AttachedArena);
-	//Active arena - enemies start patroling
-	UFUNCTION()
-	void ActiveArena(AActor* OverlappedActor, AActor* OtherActor);
-	//Start combat - enemies start combat
-	UFUNCTION()
-	void StartCombatArena(AActor* OverlappedActor, AActor* OtherActor);
 
 #if WITH_EDITORONLY_DATA
 	void SetEFunc(const EPurpose& NewPurpose);
@@ -77,16 +71,24 @@ public:
 	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
 	
-	//Start combat - enemies start combat
-	UFUNCTION()
-	void EnterArenaEvent(AActor* OverlappedActor, AActor* OtherActor);
-
-	UFUNCTION()
-	void ExitArenaEvent(AActor* OverlappedActor, AActor* OtherActor);
 private:
 	
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	UFUNCTION()
+	void NotifyArenaPurpose(AActor* OverlappedActor, AActor* OtherActor);
+
+	//Active arena
+	void ActiveArena(AActor* OverlappedActor, AActor* OtherActor) const;
+	//Start combat
+	void StartCombatArena(AActor* OverlappedActor, AActor* OtherActor) const;
+	//Enter Arena Event 
+	void EnterArenaEvent(AActor* OverlappedActor, AActor* OtherActor) const;
+	//Exit Arena
+	void ExitArenaEvent(AActor* OverlappedActor, AActor* OtherActor) const;
+	
+	
 	//Editor function to set zones to spawns and covers
 	UFUNCTION(CallInEditor, Category="Configuration",meta = (EditCondition = "efunc == EPurpose::SelectZones",EditConditionHides))
 	void SetZones() const;
@@ -96,3 +98,4 @@ private:
 
 	
 };
+
