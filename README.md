@@ -51,13 +51,13 @@ The system dynamically <strong>generates and manages spawners and trigger boxes<
 
 ## Behaviour Trees
 
-<p>The AI Behavior Tree system is organized by archetype and it has been created following a hierarchy:
-                </p>
-                <ul>
-                  <li><strong>Main Tree:</strong> Controls the overall decision flow of the archetype (e.g., combat, patrol, arena entry).</li>
-                  <li><strong>Context Subtrees:</strong> Each represents a specific behavioral context or state (e.g., Combat, Patrol, EnterArena).
+<p>The AI Behavior Tree system is organized by archetype and it has been created following a hierarchy:</p>
+ <ul>
+  <li><strong>Main Tree:</strong> Controls the overall decision flow of the archetype (e.g., combat, patrol, arena entry).</li>
+  <li><strong>Context Subtrees:</strong> Each represents a specific behavioral context or state (e.g., Combat, Patrol, EnterArena).
 These are activated based on Blackboard conditions or Selector priorities.</li>
-                  <li><strong>Action Subtrees:</strong> Contain concrete tactical actions such as attacking, finding cover or flee.</li>
+  <li><strong>Action Subtrees:</strong> Contain concrete tactical actions such as attacking, finding cover or flee.</li>
+</ul>
 
 [CustomTasks](Source/LadyUmbrella/AI/BTTasks) | [CustomServices](Source/LadyUmbrella/AI/BTServices) | 
 [AIControllers](Source/LadyUmbrella/AI/Controllers)
