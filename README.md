@@ -22,104 +22,51 @@ Switch between combat, traversal, and puzzle-solving — the umbrella isn’t ju
 <img src="https://github.com/user-attachments/assets/8d223ce6-e1df-46c6-a53f-65ac19cfe8fe" width="400">
 <img src="https://github.com/user-attachments/assets/f140a235-c668-46b4-8b40-988defa0bb5a" width="400">
 
-### 🛠️ Implementation details
+### 🛠️ Contributions
 ---
+#### Arena Builder Tool
 
-This project was made in Unreal Engine 5.5.3, using C++ exclusively, except for some Blueprints used for material shaders, animation blueprints and small trigger events. It contains a lot of different gameplay systems, whereas I'd like to highlight some of the basics:
+Encounter Builder 
+Custom tool designed to help designer team <strong>create, organize and test combat encounters</strong> efficiently, bridging the gap between design and gameplay.
+The system dynamically <strong>generates and manages spawners and trigger boxes</strong>, giving designers full control over combat flow while keeping everything neatly structured within the editor outliner.</p>
+                <p>Each spawner can be configured directly from the details panel to define:</p>
+ [ArenaManager.h](Source/LadyUmbrella/AI/Managers/ArenaManager.h) | [ArenaManager.cpp](Source/LadyUmbrella/AI/Managers/ArenaManager.cpp)
+ [AISpawnPoint.h](Source/LadyUmbrella/AI/Managers/AISpawnPoint.h) | [AISpawnPoint.cpp](Source/LadyUmbrella/AI/Managers/AISpawnPoint.cpp)
+ [TriggerBoxArena.h](Source/LadyUmbrella/AI/Triggers/TriggerBoxArena.h) | [TriggerBoxArena.cpp](Source/LadyUmbrella/AI/Triggers/TriggerBoxArena.cpp)
 
-- ## Combat Mechanics
+## Arena Manager Components
 
-  The combat system is arguably Lady Umbrella's biggest system, since it handles everything from shooting, melee attacking, launching grenades, _you name it_. To not make this section too big, lets focus on just two things, **shooting** & **reloading**.
+<b>Enemy Spawner Component</b>,Responsible for managing all spawning logic in a combat arena. It organizes spawn points into waves, reinforcements groups ans special events.
 
-  _Shooting_ is a common ability used by both the player and the enemies, so it was placed under the responsibility of the GenericWeapon, which is the parent of all weapons in the game. This way, reusability is favoured, and reduces code entanglement by making this logic shared amongst all weapons.
+[EnemySpawnerComponent.h](Source/LadyUmbrella/AI/Components/EnemySpawnerComponent.h) | [EnemySpawnerComponent.cpp](Source/LadyUmbrella/AI/Components/EnemySpawnerComponent.cpp)
 
-  ```c++
-  bool AGenericWeapon::Fire()
-  {
-    if (!HasBullets())
-    {
-      return false;
-    }
+<b>Enemy Coordination Component</b>, Responsible for managing coordinated, group-based enemy behaviour during combat by controlling various tokens that
+                    determinate which enemies can perform actions such as attacking, flanking, firing electric bullets or throwing grenades.
 
-    AmmoCurrent--;
-    MuzzleSmokeNiagaraComponent->ResetSystem();
+[EnemyCoordinationComponent.h](Source/LadyUmbrella/AI/Components/EnemyCoordinationComponent.h) | [EnemyCoordinationComponent.cpp](Source/LadyUmbrella/AI/Components/EnemyCoordinationComponent.cpp)
 
-    FireSoundFModComponent->SetParameter(*FmodEventParameterName, FMath::RandRange(0, 9));
-    FireSoundFModComponent->PlayEvent();
+<b>Enemy Zones Component</b>,Responsible for tracking and managing spatial "Zones" within arena, each containing data about how many enemies and free covers exist in that area.
 
-    return true;
-  }
-  ```
+[EnemyZonesComponent.h](Source/LadyUmbrella/AI/Components/EnemyZonesComponent.h) | [EnemyZonesComponent.cpp](Source/LadyUmbrella/AI/Components/EnemyZonesComponent.cpp)
 
-  _Reloading_ follows a similar idea, since it is something all weapons and characters in the game will use, it can be reused. It checks if the weapon CAN be reloaded first, due to shortage of bullets for example, and if it can, simply calculates how many bullets to reload by using the formula:
+## Behaviour Trees
 
-      AmountToLoad = AmmoCurrentMax - AmmoCurrent
-  
-  This makes the logic easily transferable to any weapon type in the game, as it is generic enough to be applicable to all weapon types in the game.
+<p>The AI Behavior Tree system is organized by archetype and it has been created following a hierarchy:
+                </p>
+                <ul>
+                  <li><strong>Main Tree:</strong> Controls the overall decision flow of the archetype (e.g., combat, patrol, arena entry).</li>
+                  <li><strong>Context Subtrees:</strong> Each represents a specific behavioral context or state (e.g., Combat, Patrol, EnterArena).
+These are activated based on Blackboard conditions or Selector priorities.</li>
+                  <li><strong>Action Subtrees:</strong> Contain concrete tactical actions such as attacking, finding cover or flee.</li>
 
-  ```c++
-  bool AGenericWeapon::Reload(const bool ConsumeAmmo)
-  {
-    if (!CanReload())
-    {
-      return false;
-    }
+[CustomTasks](Source/LadyUmbrella/AI/BTTasks) | [CustomServices](Source/LadyUmbrella/AI/BTServices) | 
+[AIControllers](Source/LadyUmbrella/AI/Controllers)
 
-	const int32 Amount = FMath::Clamp(AmmoCurrentMax - AmmoCurrent, 0, AmmoReserve);
+## Enviroment Query System
 
-	AmmoCurrent += Amount;
-    AmmoReserve -= Amount;
-	
-	return true;
-  }
-  ```
+<p>I utilized Unreal Engine's Environment Query System (EQS) to drive a variety of dynamic decision-making processes for AI agents, enabling them to react intelligently to their surroundings.
 
-- ## Upgrade System
-
-  Throughout the game there are workbenches which allow the player to upgrade both the offensive and defense capabilities of the umbrella. This was done by adding a simple Map to the save file, whereby the game could know if the umbrella was upgraded or not, and separate them into different types of upgrades.
-
-  ```c++
-  UPROPERTY(SaveGame)
-  TMap<EUpgradeType, FUpgrade> Upgrades;
-  ```
-
-  By using a map it became very fast and efficient to check if an upgrade was bought and if it was triggered or not, achieving a time complexity of O(n), leaving the representation to the UI.
-  
-- ## Steam Integration
-  
-  Connects to Steam through the Steamworks SDK in order to trigger achievements and track in-game stats. Since this SDK provides an API to access Valve's servers, all that had to be done was to use the provided functions and actually call the API.
-
-  ```c++
-  bool Steam::UnlockAchievement(const ESteamAchievement SteamAchievement)
-  {
-    const char* AchievementID = ToString(SteamAchievement);
-  
-    if (!bAPISuccess || !SteamUserStats())
-    {
-      return false;
-    }
-	
-    if (SteamUserStats()->SetAchievement(AchievementID))
-    {
-      SteamUserStats()->StoreStats();
-      return true;
-    }
-	
-    return false;
-  }
-  ```
-
-  By storing the Achievement identifiers in an enum (ESteamAchievement) it became trivial to actually trigger the achievement using the function displayed above. Since this neither affects gameplay directly, and Steamworks use asynchronous functions for networking, it is not required to wait for a response from Valve's servers, making this an extremely efficient way to trigger achievements.
-
-### 🛠️ Other systems
----
-
-There are, of course, more systems that haven't been mentioned yet, but are equally important, such as:
-
-- AI – Implemented using behaviour trees to dynamically change the way enemies interact with the player.
-- Camera System – A custom camera was required since increasing control for navigation and traversal is essential for the game.
-- Interactive Movement – Geometry-based motion to increase agility by allowing vaulting, mantling, swinging...
-- FMOD – Wide range of sounds in the game called for useage of this external tool that allowed for greater flexibility in sound design.
+[EQS Files](Source/LadyUmbrella/AI/EQS)
 
 ### 🤝 Acknowledgements
 ---
