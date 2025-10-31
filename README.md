@@ -24,7 +24,7 @@ Switch between combat, traversal, and puzzle-solving — the umbrella isn’t ju
 
 ### 🛠️ Contributions
 ---
-#### Arena Builder Tool
+## Arena Builder Tool
 
 Encounter Builder 
 Custom tool designed to help designer team <strong>create, organize and test combat encounters</strong> efficiently, bridging the gap between design and gameplay.
