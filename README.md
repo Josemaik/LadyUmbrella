@@ -22,7 +22,7 @@ Switch between combat, traversal, and puzzle-solving — the umbrella isn’t ju
 <img src="https://github.com/user-attachments/assets/8d223ce6-e1df-46c6-a53f-65ac19cfe8fe" width="400">
 <img src="https://github.com/user-attachments/assets/f140a235-c668-46b4-8b40-988defa0bb5a" width="400">
 
-### 🛠️ Contributions
+### 🛠️ Contributions - IA
 ---
 ## Arena Builder Tool
 
@@ -64,9 +64,42 @@ These are activated based on Blackboard conditions or Selector priorities.</li>
 
 ## Enviroment Query System
 
-<p>I utilized Unreal Engine's Environment Query System (EQS) to drive a variety of dynamic decision-making processes for AI agents, enabling them to react intelligently to their surroundings.
+<p>I utilized Unreal Engine's Environment Query System (EQS) to drive a variety of dynamic decision-making processes for AI agents, enabling them to react intelligently to their surroundings.</p>
 
 [EQS Files](Source/LadyUmbrella/AI/EQS)
+
+
+## Doors Triggers
+
+<p>Enemies can enter arenas throught visible entry points to make encounters feel more dynamic, beliable and inmersive.</p>
+
+[TriggerArenaDoor.h](Source/LadyUmbrella/AI/Triggers/TriggerArenaDoor.h) | [TriggerArenaDoor.cpp](Source/LadyUmbrella/AI/Triggers/TriggerArenaDoor.cpp)
+
+### 🛠️ Contributions - Gameplay
+
+## Grapple Reaction Component
+
+<p>The umbrella’s hook can be fired to grab enemies and pull them toward the player close range—ideal for follow-up attacks while being stunned for a short duration before returning to normal behavior.</p>
+
+[GrappleReactionComponent.h](Source/LadyUmbrella/Components/GadgetsReactionComponent/GrappleReactionComponent.h) | [GrappleReactionComponent.cpp](Source/LadyUmbrella/Components/GadgetsReactionComponent/GrappleReactionComponent.h)
+
+## Voice Line System
+
+<p>The Voice Line System includes the creation of a <strong>VoiceLineComponent</strong>, which can be attached to any character. Its responsabilities are:</p>
+<ul>
+  <li><strong>Handle voice line playback</strong> ( audio system with FMOD) and <strong>subtitle display</strong> ( UI system )</li>
+  <li><strong>Load and organize voice lines from DataTables</strong> containing subtitle text, duration and state</li>
+  <li><strong>Store index ranges for each State</strong> so it knows which lines belong to which state</li>
+  <li><strong>Handle playback logic depending on context</strong> ( Cinematic, In-game cinematic or Combat)</li>
+</ul>
+
+<p>All Voice Lines files here:<p>
+
+[VoiceLineComponent, Combat Voice Line Manager and DTOs](Source/LadyUmbrella/Components/VoiceLineComponent)
+
+[In-Game Cinematics Trigger Actor](Source/LadyUmbrella/Environment/TriggerCinematic)
+
+[Main Sequence Trigger Actor](Source/LadyUmbrella/Environment/TriggerGadgets)
 
 ### 🤝 Acknowledgements
 ---
