@@ -82,7 +82,7 @@ These are activated based on Blackboard conditions or Selector priorities.</li>
 [Generic Weapon](Source/LadyUmbrella/Weapons/GenericWeapon.h) | [AgencyShield](Source/LadyUmbrella/Weapons/AgencyShield) | [Beretta](Source/LadyUmbrella/Weapons/Beretta)
 
 ### 🛠️ Contributions - Gameplay
-
+---
 ## Grapple Reaction Component
 
 <p>The umbrella’s hook can be fired to grab enemies and pull them toward the player close range—ideal for follow-up attacks while being stunned for a short duration before returning to normal behavior.</p>
