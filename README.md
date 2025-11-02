@@ -75,6 +75,12 @@ These are activated based on Blackboard conditions or Selector priorities.</li>
 
 [TriggerArenaDoor.h](Source/LadyUmbrella/AI/Triggers/TriggerArenaDoor.h) | [TriggerArenaDoor.cpp](Source/LadyUmbrella/AI/Triggers/TriggerArenaDoor.cpp)
 
+## Enemy Character and Weapon Classes
+
+[Mafia](Source/LadyUmbrella/Characters/Enemies/Mafia) | [Agency](Source/LadyUmbrella/Characters/Enemies/Agency)
+
+[Generic Weapon](Source/LadyUmbrella/Weapons/GenericWeapon.h) | [AgencyShield](Source/LadyUmbrella/Weapons/AgencyShield) | [Beretta](Source/LadyUmbrella/Weapons/Beretta)
+
 ### 🛠️ Contributions - Gameplay
 
 ## Grapple Reaction Component
